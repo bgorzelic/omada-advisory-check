@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Omada gateway advisory checker (unofficial)</title>
+<style>
+:root{color-scheme:light dark;font-family:system-ui,sans-serif}
+body{max-width:46rem;margin:1rem auto;padding:0 1rem;line-height:1.45}
+textarea{width:100%;min-height:9rem;font:0.9rem ui-monospace,monospace;box-sizing:border-box}
+button{font:inherit;padding:.6rem 1rem;margin:.5rem 0}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+td,th{border-bottom:1px solid #8884;padding:.35rem;text-align:left;vertical-align:top}
+.BELOW_FIXED{color:#b00020;font-weight:700}.UNKNOWN{color:#8a5a00;font-weight:700}.AT_OR_ABOVE_FIXED{color:#116611}
+.note{font-size:.85rem;opacity:.85}
+</style></head><body>
+<h1>Omada gateway advisory checker</h1>
+<p class="note">Unofficial; not affiliated with TP-Link. Runs entirely in your browser; nothing is uploaded.
+Checks gateways against fixed builds in TP-Link bulletin 132084 (2026-08-20).</p>
+<label for="in">Paste CSV: <code>model,hw,firmware</code></label>
+<textarea id="in" spellcheck="false">model,hw,firmware
+ER605,v2,2.4.3 Build 20260101 Rel.1
+ER7206,v2,2.3.5 Build 20260625 Rel.43136</textarea>
+<button id="go">Check</button>
+<div id="out"></div>
+<p class="note">UNKNOWN means the model is not in the data table; it is not clean. Status compares against fixed builds only.
+CVE-2026-19586 is reachable only if the OpenVPN server is enabled; the vendor workaround is to disable it or restrict source IPs.
+<span id="meta"></span></p>
+<script>
+const BULLETIN = {
+  "bulletin": "132084",
+  "title": "Multiple Vulnerabilities in Omada Gateways",
+  "published": "2026-08-20",
+  "url": "https://support.omadanetworks.com/en/bulletin/132084/",
+  "cves": [
+    "CVE-2026-9033",
+    "CVE-2026-19586",
+    "CVE-2026-19683"
+  ],
+  "transcribed": "2026-11-06",
+  "completeness_note": "Transcribed 2026-11-06 from a browser read of the bulletin table (19 rows, matching the research summary). Models absent here are reported UNKNOWN, never clean. Re-verify against the live bulletin before relying on this.",
+  "fixed": [
+    {
+      "model": "ER7212PC",
+      "hw": "2",
+      "firmware": "2.4.3 Build 20260722 Rel.40250"
+    },
+    {
+      "model": "ER605",
+      "hw": "2",
+      "firmware": "2.4.4 Build 20260630 Rel.14398"
+    },
+    {
+      "model": "ER7206",
+      "hw": "2",
+      "firmware": "2.3.5 Build 20260625 Rel.43136"
+    },
+    {
+      "model": "ER7406",
+      "hw": "1",
+      "firmware": "1.3.4 Build 20260625 Rel.43136"
+    },
+    {
+      "model": "ER707-M2",
+      "hw": "1",
+      "firmware": "1.4.4 Build 20260625 Rel.43063"
+    },
+    {
+      "model": "ER7412-M2",
+      "hw": "1",
+      "firmware": "1.2.0 Build 20260630 Rel.82947"
+    },
+    {
+      "model": "ER8411",
+      "hw": "1",
+      "firmware": "1.4.1 Build 20260708 Rel.64832"
+    },
+    {
+      "model": "ER706W",
+      "hw": "1",
+      "firmware": "1.2.11 Build 20260723 Rel.41567"
+    },
+    {
+      "model": "ER706W-4G",
+      "hw": "1",
+      "firmware": "1.2.6 Build 20260723 Rel.41321"
+    },
+    {
+      "model": "ER706W-4G",
+      "hw": "2",
+      "firmware": "2.1.11 Build 20260723 Rel.41624"
+    },
+    {
+      "model": "ER706WP-4G",
+      "hw": "1",
+      "firmware": "1.1.11 Build 20260723 Rel.41624"
+    },
+    {
+      "model": "ER703WP-4G-Outdoor",
+      "hw": "1",
+      "firmware": "1.1.7 Build 20260723 Rel.41712"
+    },
+    {
+      "model": "DR3220v-4G",
+      "hw": "1",
+      "firmware": "1.2.0 Build 20260630 Rel.82652"
+    },
+    {
+      "model": "DR3650v",
+      "hw": "1",
+      "firmware": "1.2.0 Build 20260630 Rel.83311"
+    },
+    {
+      "model": "DR3650v-4G",
+      "hw": "1",
+      "firmware": "1.2.0 Build 20260630 Rel.83347"
+    },
+    {
+      "model": "ER603WP-4G-Outdoor",
+      "hw": "1",
+      "firmware": "1.0.2 Build 20260723 Rel.43271"
+    },
+    {
+      "model": "DR3150",
+      "hw": "1",
+      "firmware": "1.0.1 Build 20260722 Rel.16854"
+    },
+    {
+      "model": "ER701-5G-Outdoor",
+      "hw": "1",
+      "firmware": "1.0.3 Build 20260723 Rel.40931"
+    },
+    {
+      "model": "ER605W",
+      "hw": "2",
+      "firmware": "2.0.4 Build 20260723 Rel.43763"
+    }
+  ]
+};
+// Port of omada_advisory_check.py. Keep behavior identical; tests/test_web.py checks parity.
+(function (root) {
+  const FW_RE = /^\s*(\d+(?:\.\d+)*)\s+Build\s+(\d{8})/i;
+  const normHw = (s) => { const m = /^v?(\d+)/i.exec(s.trim()); return m ? m[1] : s.trim(); };
+  const normModel = (s) => s.trim().replace(/\s*\([^)]*\)\s*$/, "").toUpperCase();
+  function parseFw(s) {
+    const m = FW_RE.exec(s);
+    return m ? { v: m[1].split(".").map(Number), b: Number(m[2]) } : null;
+  }
+  function cmp(a, b) {
+    const n = Math.max(a.v.length, b.v.length);
+    for (let i = 0; i < n; i++) { const d = (a.v[i] || 0) - (b.v[i] || 0); if (d) return d; }
+    return a.b - b.b;
+  }
+  function buildIndex(data) {
+    const idx = new Map();
+    for (const r of data.fixed) idx.set(normModel(r.model) + "|" + normHw(r.hw), r.firmware);
+    return idx;
+  }
+  function check(model, hw, firmware, idx) {
+    const target = idx.get(normModel(model) + "|" + normHw(hw));
+    if (!target) return ["UNKNOWN", "model/hardware version not in transcribed bulletin table"];
+    const have = parseFw(firmware);
+    if (!have) return ["UNKNOWN", "cannot parse firmware"];
+    return [cmp(have, parseFw(target)) < 0 ? "BELOW_FIXED" : "AT_OR_ABOVE_FIXED", target];
+  }
+  // CSV with header model,hw,firmware. Firmware contains no commas; quoted fields not supported.
+  function parseCsv(text) {
+    const lines = text.split(/\r?\n/).filter((l) => l.trim());
+    if (!lines.length) return [];
+    const head = lines[0].split(",").map((h) => h.trim().toLowerCase());
+    return lines.slice(1).map((l) => {
+      const c = l.split(","); const o = {};
+      head.forEach((h, i) => (o[h] = (c[i] || "").trim()));
+      return o;
+    });
+  }
+  const api = { check, buildIndex, parseCsv, parseFw };
+  if (typeof module !== "undefined") module.exports = api; else root.OmadaCheck = api;
+})(typeof window !== "undefined" ? window : globalThis);
+
+const idx = OmadaCheck.buildIndex(BULLETIN);
+const esc = (s) => s.replace(/[&<>"]/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+document.getElementById("meta").textContent = "Data: " + BULLETIN.fixed.length + " rows, transcribed " + BULLETIN.transcribed + ".";
+document.getElementById("go").onclick = () => {
+  const rows = OmadaCheck.parseCsv(document.getElementById("in").value);
+  const body = rows.map((r) => { const [s, d] = OmadaCheck.check(r.model || "", r.hw || "", r.firmware || "", idx);
+    return "<tr><td class='" + s + "'>" + s + "</td><td>" + esc(r.model || "") + " hw" + esc(r.hw || "") + "</td><td>" + esc(r.firmware || "") + "</td><td>" + esc(d) + "</td></tr>"; }).join("");
+  document.getElementById("out").innerHTML = rows.length
+    ? "<table><tr><th>Status</th><th>Device</th><th>Firmware</th><th>Fixed build / note</th></tr>" + body + "</table>"
+    : "<p>No rows.</p>";
+};
+</script></body></html>
