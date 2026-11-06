@@ -11,6 +11,7 @@ table{border-collapse:collapse;width:100%;font-size:.9rem}
 td,th{border-bottom:1px solid #8884;padding:.35rem;text-align:left;vertical-align:top}
 .BELOW_FIXED{color:#b00020;font-weight:700}.UNKNOWN{color:#8a5a00;font-weight:700}.AT_OR_ABOVE_FIXED{color:#116611}
 .note{font-size:.85rem;opacity:.85}
+@media(max-width:600px){table,thead,tbody,tr,td{display:block}thead{display:none}tr{padding:.6rem 0;border-bottom:1px solid #8884}td{border:0;padding:.1rem 0;word-break:break-word}}
 </style></head><body>
 <h1>Omada gateway advisory checker</h1>
 <p class="note">Unofficial; not affiliated with TP-Link. Runs entirely in your browser; nothing is uploaded.
@@ -184,7 +185,7 @@ document.getElementById("go").onclick = () => {
   const body = rows.map((r) => { const [s, d] = OmadaCheck.check(r.model || "", r.hw || "", r.firmware || "", idx);
     return "<tr><td class='" + s + "'>" + s + "</td><td>" + esc(r.model || "") + " hw" + esc(r.hw || "") + "</td><td>" + esc(r.firmware || "") + "</td><td>" + esc(d) + "</td></tr>"; }).join("");
   document.getElementById("out").innerHTML = rows.length
-    ? "<table><tr><th>Status</th><th>Device</th><th>Firmware</th><th>Fixed build / note</th></tr>" + body + "</table>"
+    ? "<table><thead><tr><th>Status</th><th>Device</th><th>Firmware</th><th>Fixed build / note</th></tr></thead><tbody>" + body + "</tbody></table>"
     : "<p>No rows.</p>";
 };
 </script></body></html>
