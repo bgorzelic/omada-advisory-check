@@ -35,3 +35,15 @@ def test_unknown_model_never_clean():
 
 def test_unparseable_firmware_unknown():
     assert check("ER605", "2", "2.4.4", FIXED)[0] == UNKNOWN
+
+
+def test_hw_variants_and_region_suffix():
+    fw = "2.0.1 Build 20260101 Rel.1"
+    for hw in ("2", "v2", "V2.0", "2.0"):
+        assert check("ER605W", hw, fw, FIXED)[0] == BELOW
+    assert check("ER605(UN)", "v2.0", "2.4.4 Build 20260630 Rel.14398", FIXED)[0] == OK
+
+
+def test_added_rows_present():
+    assert len(FIXED) == 19
+    assert check("DR3150", "1", "1.0.0 Build 20260101 Rel.1", FIXED)[0] == BELOW

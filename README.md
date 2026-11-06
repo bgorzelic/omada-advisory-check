@@ -16,8 +16,9 @@ Exit code 1 if any device is `BELOW_FIXED`. See `example-devices.csv`.
 ## Limits (read these)
 
 - `UNKNOWN` means the model/hardware version is not in the data file. It is **not** clean.
-- The data file holds 15 rows transcribed from the bulletin on 2026-11-06. An earlier note said 19
-  models; unresolved. Re-verify against the live bulletin before relying on results.
+- The data file holds the 19 rows of the bulletin table, transcribed 2026-11-06. Re-verify against the
+  live bulletin before relying on results.
+- Hardware versions match on the major number (`v2`, `2.0` -> 2); a region suffix like `ER605(UN)` is ignored.
 - Status compares against fixed builds only. CVE-2026-19586 is reachable only when the OpenVPN
   server is enabled; the vendor workaround is to disable it or restrict source IPs.
 - Version compare assumes the dotted version then the build date, as in `2.4.4 Build 20260630 Rel.14398`.

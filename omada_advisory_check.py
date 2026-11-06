@@ -26,7 +26,14 @@ def parse_fw(s: str) -> tuple[tuple[int, ...], int] | None:
 
 
 def norm(s: str) -> str:
-    return re.sub(r"^v", "", s.strip(), flags=re.IGNORECASE)
+    """Hardware version to its major number: 'v2', 'V2.0', '2.0' -> '2'."""
+    m = re.match(r"^v?(\d+)", s.strip(), flags=re.IGNORECASE)
+    return m.group(1) if m else s.strip()
+
+
+def norm_model(s: str) -> str:
+    """Upper-case and drop a trailing region suffix: 'ER605(UN)' -> 'ER605'."""
+    return re.sub(r"\s*\([^)]*\)\s*$", "", s.strip()).upper()
 
 
 def load_fixed(path: Path = DATA) -> dict[tuple[str, str], str]:
@@ -35,7 +42,7 @@ def load_fixed(path: Path = DATA) -> dict[tuple[str, str], str]:
 
 
 def check(model: str, hw: str, firmware: str, fixed: dict[tuple[str, str], str]) -> tuple[str, str]:
-    target = fixed.get((model.strip().upper(), norm(hw)))
+    target = fixed.get((norm_model(model), norm(hw)))
     if target is None:
         return UNKNOWN, "model/hardware version not in transcribed bulletin table"
     have, want = parse_fw(firmware), parse_fw(target)

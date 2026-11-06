@@ -3,24 +3,108 @@
   "title": "Multiple Vulnerabilities in Omada Gateways",
   "published": "2026-08-20",
   "url": "https://support.omadanetworks.com/en/bulletin/132084/",
-  "cves": ["CVE-2026-9033", "CVE-2026-19586", "CVE-2026-19683"],
+  "cves": [
+    "CVE-2026-9033",
+    "CVE-2026-19586",
+    "CVE-2026-19683"
+  ],
   "transcribed": "2026-11-06",
-  "completeness_note": "Transcribed from a browser read of the bulletin table: 15 rows. An earlier research note said 19 models; the discrepancy is unresolved. Models absent here are reported UNKNOWN, never clean. Re-verify against the live bulletin before relying on this.",
+  "completeness_note": "Transcribed 2026-11-06 from a browser read of the bulletin table (19 rows, matching the research summary). Models absent here are reported UNKNOWN, never clean. Re-verify against the live bulletin before relying on this.",
   "fixed": [
-    {"model": "ER7212PC", "hw": "2", "firmware": "2.4.3 Build 20260722 Rel.40250"},
-    {"model": "ER605", "hw": "2", "firmware": "2.4.4 Build 20260630 Rel.14398"},
-    {"model": "ER7206", "hw": "2", "firmware": "2.3.5 Build 20260625 Rel.43136"},
-    {"model": "ER7406", "hw": "1", "firmware": "1.3.4 Build 20260625 Rel.43136"},
-    {"model": "ER707-M2", "hw": "1", "firmware": "1.4.4 Build 20260625 Rel.43063"},
-    {"model": "ER7412-M2", "hw": "1", "firmware": "1.2.0 Build 20260630 Rel.82947"},
-    {"model": "ER8411", "hw": "1", "firmware": "1.4.1 Build 20260708 Rel.64832"},
-    {"model": "ER706W", "hw": "1", "firmware": "1.2.11 Build 20260723 Rel.41567"},
-    {"model": "ER706W-4G", "hw": "1", "firmware": "1.2.6 Build 20260723 Rel.41321"},
-    {"model": "ER706W-4G", "hw": "2", "firmware": "2.1.11 Build 20260723 Rel.41624"},
-    {"model": "ER706WP-4G", "hw": "1", "firmware": "1.1.11 Build 20260723 Rel.41624"},
-    {"model": "ER703WP-4G-Outdoor", "hw": "1", "firmware": "1.1.7 Build 20260723 Rel.41712"},
-    {"model": "DR3220v-4G", "hw": "1", "firmware": "1.2.0 Build 20260630 Rel.82652"},
-    {"model": "DR3650v", "hw": "1", "firmware": "1.2.0 Build 20260630 Rel.83311"},
-    {"model": "DR3650v-4G", "hw": "1", "firmware": "1.2.0 Build 20260630 Rel.83347"}
+    {
+      "model": "ER7212PC",
+      "hw": "2",
+      "firmware": "2.4.3 Build 20260722 Rel.40250"
+    },
+    {
+      "model": "ER605",
+      "hw": "2",
+      "firmware": "2.4.4 Build 20260630 Rel.14398"
+    },
+    {
+      "model": "ER7206",
+      "hw": "2",
+      "firmware": "2.3.5 Build 20260625 Rel.43136"
+    },
+    {
+      "model": "ER7406",
+      "hw": "1",
+      "firmware": "1.3.4 Build 20260625 Rel.43136"
+    },
+    {
+      "model": "ER707-M2",
+      "hw": "1",
+      "firmware": "1.4.4 Build 20260625 Rel.43063"
+    },
+    {
+      "model": "ER7412-M2",
+      "hw": "1",
+      "firmware": "1.2.0 Build 20260630 Rel.82947"
+    },
+    {
+      "model": "ER8411",
+      "hw": "1",
+      "firmware": "1.4.1 Build 20260708 Rel.64832"
+    },
+    {
+      "model": "ER706W",
+      "hw": "1",
+      "firmware": "1.2.11 Build 20260723 Rel.41567"
+    },
+    {
+      "model": "ER706W-4G",
+      "hw": "1",
+      "firmware": "1.2.6 Build 20260723 Rel.41321"
+    },
+    {
+      "model": "ER706W-4G",
+      "hw": "2",
+      "firmware": "2.1.11 Build 20260723 Rel.41624"
+    },
+    {
+      "model": "ER706WP-4G",
+      "hw": "1",
+      "firmware": "1.1.11 Build 20260723 Rel.41624"
+    },
+    {
+      "model": "ER703WP-4G-Outdoor",
+      "hw": "1",
+      "firmware": "1.1.7 Build 20260723 Rel.41712"
+    },
+    {
+      "model": "DR3220v-4G",
+      "hw": "1",
+      "firmware": "1.2.0 Build 20260630 Rel.82652"
+    },
+    {
+      "model": "DR3650v",
+      "hw": "1",
+      "firmware": "1.2.0 Build 20260630 Rel.83311"
+    },
+    {
+      "model": "DR3650v-4G",
+      "hw": "1",
+      "firmware": "1.2.0 Build 20260630 Rel.83347"
+    },
+    {
+      "model": "ER603WP-4G-Outdoor",
+      "hw": "1",
+      "firmware": "1.0.2 Build 20260723 Rel.43271"
+    },
+    {
+      "model": "DR3150",
+      "hw": "1",
+      "firmware": "1.0.1 Build 20260722 Rel.16854"
+    },
+    {
+      "model": "ER701-5G-Outdoor",
+      "hw": "1",
+      "firmware": "1.0.3 Build 20260723 Rel.40931"
+    },
+    {
+      "model": "ER605W",
+      "hw": "2",
+      "firmware": "2.0.4 Build 20260723 Rel.43763"
+    }
   ]
 }
