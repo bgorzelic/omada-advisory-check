@@ -22,3 +22,5 @@ Exit code 1 if any device is `BELOW_FIXED`. See `example-devices.csv`.
 - Status compares against fixed builds only. CVE-2026-19586 is reachable only when the OpenVPN
   server is enabled; the vendor workaround is to disable it or restrict source IPs.
 - Version compare assumes the dotted version then the build date, as in `2.4.4 Build 20260630 Rel.14398`.
+
+    open web/index.html   # offline browser version; same data, same rules
